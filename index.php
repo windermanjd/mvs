@@ -6,6 +6,8 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="ckeditor.js"></script>
+  <script src="sample.js"></script>
   
 <style type="text/css">
 body {
@@ -89,8 +91,10 @@ app.controller("movie",function($scope,$interval){
 	}
 	
 	var iscreate = false;
-	
+	var editor = null;
 	$scope.init = function(){
+		initSample();
+		editor = CKEDITOR.instances.editor;
 		$.get("data.php",function(res){
 			res = JSON.parse(res);
 			if(res.statusCode==200){
@@ -193,7 +197,7 @@ formData.append('file4', $('#file4')[0].files[0]);
 formData.append('file5', $('#file5')[0].files[0]);
 						}
 formData.append('title',$scope.config.value.title);
-formData.append('desc',$scope.config.value.desc);
+formData.append('desc',editor.getData());
 var _fileremove = [];
 if($scope.config.value.images.images1.isremove){
 	if($scope.config.value.images.images1.value!=""){
@@ -279,7 +283,7 @@ $.ajax({
 		$("#file5").val("");
 		$scope.config.status = false;
 	$scope.config.value.title="";
-	$scope.config.value.desc="";
+	editor.setData("");
 	$scope.config.value.images.images1.value="";
 	$scope.config.value.images.images1.status = false;
 	$scope.config.value.images.images1.isremove = false;
@@ -466,8 +470,13 @@ $.ajax({
          <td>&nbsp;</td>
        </tr>
        <tr>
-         <td colspan="2"><label for="textarea"></label>
-           <textarea name="textarea" ng-model="config.value.desc" class="form-control" id="textarea" cols="45" rows="5"></textarea></td>
+         <td colspan="2">
+        
+				<div id="editor">
+					
+				</div>
+			
+                </td>
          </tr>
        <tr>
          <td>&nbsp;</td>
